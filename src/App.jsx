@@ -13,25 +13,61 @@ const fetchPlayers = async () => {
 const playersPromise = fetchPlayers();
 
 function App() {
-  const [availableBalance, setAvailableBalance] = useState(5000000);
+  const [availableBalance, setAvailableBalance] = useState(50000000);
   const [toggle, setToggle] = useState(true);
+  const [selectedPlayer, setSelectedPlayer] = useState([]);
+  const [addMorePlayers, setAddMorePlayers] = useState(false)
+  // console.log(addMorePlayers);
+  
+  // console.log(selectedPlayer);
+  const handleRemovePlayer = (p) => {
+    const newSelectedPlayers = selectedPlayer.filter(
+      (player) => player.id !== p.id
+    );
+    setSelectedPlayer(newSelectedPlayers);
+    setAvailableBalance(availableBalance + p.price)
+  };
+ 
 
   return (
     <>
       <Navbar availableBalance={availableBalance}></Navbar>
       <Banner></Banner>
-      <Category toggle={toggle} setToggle={setToggle}></Category>
+      <Category
+        selectedPlayer={selectedPlayer}
+        toggle={toggle}
+        setToggle={setToggle}
+      ></Category>
       {toggle ? (
         <Suspense fallback={<h1>Loading...</h1>}>
           <AvailablePlayers
+            selectedPlayer={selectedPlayer}
+            setSelectedPlayer={setSelectedPlayer}
             availableBalance={availableBalance}
             setAvailableBalance={setAvailableBalance}
             playersPromise={playersPromise}
           ></AvailablePlayers>
         </Suspense>
       ) : (
-        <SelectedPlayers></SelectedPlayers>
+        <SelectedPlayers
+        setAddMorePlayers={setAddMorePlayers}
+          handleRemovePlayer={handleRemovePlayer}
+          selectedPlayer={selectedPlayer}
+        ></SelectedPlayers>
       )}
+
+      {
+        addMorePlayers? <Suspense fallback={<h1>Loading...</h1>}>
+          <AvailablePlayers
+            selectedPlayer={selectedPlayer}
+            setSelectedPlayer={setSelectedPlayer}
+            availableBalance={availableBalance}
+            setAvailableBalance={setAvailableBalance}
+            playersPromise={playersPromise}
+          ></AvailablePlayers>
+        </Suspense> : ''
+      }
+      
     </>
   );
 }

@@ -2,17 +2,25 @@ import React, { useState } from "react";
 import playerSymbol from "../../assets/playerSymbol.png";
 import countrySymbol from "../../assets/Group(2).png";
 
-const PlayerCard = ({ player, availableBalance, setAvailableBalance }) => {
-
-  const [isSelected, setIsSelected] = useState(false)
+const PlayerCard = ({
+  player,
+  availableBalance,
+  setAvailableBalance,
+  selectedPlayer,
+  setSelectedPlayer,
+}) => {
+  const [isSelected, setIsSelected] = useState(false);
 
   const handleBalance = () => {
-    if(availableBalance < player.price){
-      return alert('not enough money')
+    if (availableBalance < player.price) {
+      return alert("not enough money");
+    }
+    if(selectedPlayer.length === 6){
+      return alert('🚫 You have maximum players')
     }
     setAvailableBalance(availableBalance - player.price);
-    console.log(player.price);
-    setIsSelected(true)
+    setIsSelected(true);
+    setSelectedPlayer([...selectedPlayer, player])
   };
   return (
     <div className="card   p-5 border border-gray-300 ">
@@ -45,13 +53,14 @@ const PlayerCard = ({ player, availableBalance, setAvailableBalance }) => {
         </div>
         <div className="flex justify-between items-center">
           <h2 className="font-bold">Price: ${player.price}</h2>
-          <button disabled={isSelected}
+          <button
+            disabled={isSelected}
             onClick={() => {
               handleBalance();
             }}
             className="btn "
           >
-            {isSelected? 'Selected': 'Choose Player'}
+            {isSelected ? "Selected" : "Choose Player"}
           </button>
         </div>
       </div>
